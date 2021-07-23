@@ -33,9 +33,9 @@ export default () => {
     }
     ws.on("mouseMove", (data) => {})
 
-    ws.onclose = function (e) {
+    ws.on("disconnect", {
       console.error("Chat socket closed unexpectedly")
-    }
+    });
   }, [])
 
   return <canvas className="canvas"></canvas>
