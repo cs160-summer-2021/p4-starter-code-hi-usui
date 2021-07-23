@@ -15,5 +15,6 @@ npm install
 
 ```bash
 npm run dev
+curl localhost:8000/draw
 ```
 
