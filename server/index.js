@@ -12,6 +12,7 @@ const connections = {}
 
 io.on("connection", async (socket) => {
   const id = socket.id
+  console.log(`Client id '${id}' connected!`)
   if (!connections[id]) {
     connections[id] = id
   }

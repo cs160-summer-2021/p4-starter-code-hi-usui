@@ -1,4 +1,5 @@
 // import * as actions from "actions/item"
+import * as paper from "paper"
 import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useActions } from "react-redux-actions-hook"
@@ -6,7 +7,7 @@ import { useHistory } from "react-router-dom"
 import { io } from "socket.io-client"
 
 export default () => {
-  const action = useActions(actions)
+  // const action = useActions(actions)
   const history = useHistory()
   // const { auth, item } = useSelector((state) => ({
   //   item: state.item,
