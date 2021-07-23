@@ -1,0 +1,53 @@
+{
+  "name": "tutor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "imports": {
+    "#node/*": "./server/*.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node server/build/index.js",
+    "dev": "concurrently --kill-others --prefix \"{time}-{pid} {name}\" -n \"REDIS,MONGODB\" -c \"green,cyan,gray\" \"node_modules/.cache/redis-memory-server/redis-binaries/stable/redis-server\" \"npm run mongodb-server-local\" \"npm run logic-servers\"",
+    "logic-servers": "wait-on tcp:27017 && wait-on tcp:6379 && concurrently --prefix \"{name}\" -n \"BACKEND,FRONTEND\" -c \"magenta,yellow\" \"npm run server\" \"wait-on tcp:5000 && npm run client\"",
+    "server": "cross-env NODE_ENV=dev nodemon --ignore client --exec 'prettier --write --config prettier.config.cjs --loglevel warn *.json server/index.js && node --experimental-json-modules server/index.js' server client prettier.config.cjs",
+    "client": "concurrently \"nodemon --ignore client/node_modules --exec 'prettier --write --config prettier.config.cjs --loglevel warn *.json client/src/**/*.js' *.cjs *.json\" \"npm run start --prefix client\"",
+    "mongodb-server-local": "run-rs $OPTS -v 4.4.4 --dbpath data --keep --number 1",
+    "mongo": "mongo localhost:27017 # Go into interactive CLI with 'npm run mongo'",
+    "redis": "redis-cli # Go into interactive CLI with 'npm run redis'",
+    "test-script": "cross-env NODE_ENV=test nyc mocha --experimental-json-modules --file server/config.dotenv.mjs --timeout 15000 --file test/setup.mjs --recursive test/tests --exit",
+    "test": "nodemon --exec npm run test-script",
+    "build": "mkdir server/build; rollup server/index.js -c server/config.rollup.js | terser --compress --mangle -o server/build/index.js",
+    "postinstall": "npm install --prefix client",
+    "parallel-install": "concurrently --success all --prefix \"{time}-{pid} {name}\" -n \"BACKEND,FRONTEND\" -c \"magenta,yellow\" \"npm install --only prod\" \"npm install --prefix client --only prod\"",
+    "parallel-build": "concurrently --success all --prefix \"{time}-{pid} {name}\" -n \"BACKEND,FRONTEND\" -c \"magenta,yellow\" \"npm run build\" \"npm run build --prefix client\""
+  },
+  "dependencies": {
+    "@rollup/plugin-alias": "^3.1.2",
+    "concurrently": "^4.1.2",
+    "dotenv": "^7.0.0",
+    "express": "^4.15.2",
+    "path": "^0.12.7",
+    "rollup": "^2.45.2",
+    "socket.io": "^4.1.3",
+    "terser": "^5.6.1"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
+    "chai": "^3.5.0",
+    "cross-env": "^7.0.3",
+    "mocha": "^8.3.2",
+    "mocha-prepare": "^0.1.0",
+    "nodemon": "^1.19.3",
+    "nyc": "^14.1.1",
+    "prettier": "^2.2.1",
+    "redis-memory-server": "^0.3.1",
+    "run-rs": "^0.7.0",
+    "sinon": "^7.2.7",
+    "supertest": "^4.0.2",
+    "wait-on": "^3.3.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
