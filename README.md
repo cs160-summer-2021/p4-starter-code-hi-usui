@@ -23,6 +23,9 @@ Having issues? @hi-usui tested this on:
 - Node v14.17.3, npm v6.14.13
 - Node v16.4.1, npm v7.18.1
 
+Literally from-scratch macOS installation to project running
+https://youtu.be/IGIFB3Ad6o4
+
 Cleanup:
 ```
 rm -rf node_modules
