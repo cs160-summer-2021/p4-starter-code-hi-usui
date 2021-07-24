@@ -6,8 +6,7 @@ import { useActions } from "react-redux-actions-hook"
 import { useHistory, useLocation } from "react-router-dom"
 import { io } from "socket.io-client"
 
-const useQuery = () => new URLSearchParams(useLocation().search);
-
+const useQuery = () => new URLSearchParams(useLocation().search)
 
 export default () => {
   // const action = useActions(actions)
@@ -54,7 +53,7 @@ export default () => {
     ws.on("addPoint", (data) => {
       console.log(size)
       if (data.id) {
-        if (data.id != ws.id && size == "small"){
+        if (data.id != ws.id && size == "small") {
           return
         }
         const { x, y } = data.payload

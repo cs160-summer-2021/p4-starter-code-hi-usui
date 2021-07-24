@@ -8,7 +8,7 @@ export default {
     alias({
       entries: [
         {
-          find: "#node",
+          find: "#src",
           replacement: path.dirname(new URL(import.meta.url).pathname),
         },
       ],

@@ -3,6 +3,9 @@ import { createServer } from "http"
 import _ from "lodash"
 import { Server } from "socket.io"
 
+import "#src/services/mongodb"
+import "#src/services/redis"
+
 import { PORT_EXPRESS } from "./config.js"
 
 const app = express()
@@ -88,3 +91,6 @@ app.use(express.urlencoded({ extended: true }))
 
 server.listen(PORT_EXPRESS)
 console.log(`Server now listening on port ${PORT_EXPRESS}`)
+
+process.on("SIGINT", () => process.exit(0))
+process.on("SIGTERM", () => process.exit(0))
