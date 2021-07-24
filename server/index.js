@@ -61,9 +61,14 @@ io.on("connection", async (socket) => {
   }
 
   socket.on("onMouseMove", async (data) => {
-    connections[data.id].payload.points.push(data.payload)
-    for (let anyId in activeConnections(connections)) {
-      connections[anyId].socket.emit("addPoint", { id, payload: data.payload })
+    if (connections[data.id]) {
+      connections[data.id].payload.points.push(data.payload)
+      for (let anyId in activeConnections(connections)) {
+        connections[anyId].socket.emit("addPoint", {
+          id,
+          payload: data.payload,
+        })
+      }
     }
   })
 

@@ -3,12 +3,17 @@ import * as paper from "paper"
 import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useActions } from "react-redux-actions-hook"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { io } from "socket.io-client"
+
+const useQuery = () => new URLSearchParams(useLocation().search);
+
 
 export default () => {
   // const action = useActions(actions)
   const history = useHistory()
+  const query = useQuery()
+  const size = query.get("size")
   // const { auth, item } = useSelector((state) => ({
   //   item: state.item,
   // }));
@@ -28,8 +33,10 @@ export default () => {
       for (let key in data.payload.pathProperties) {
         allClients[data.id].path[key] = data.payload.pathProperties[key]
       }
-      for (let point of data.payload.points) {
-        allClients[data.id].path.add(point)
+      if (size == "large") {
+        for (let point of data.payload.points) {
+          allClients[data.id].path.add(point)
+        }
       }
       console.log(data.payload)
     })
@@ -45,9 +52,15 @@ export default () => {
     }
 
     ws.on("addPoint", (data) => {
-      const { x, y } = data.payload
-      if (allClients[data.id]) {
-        allClients[data.id].path.add({ x, y })
+      console.log(size)
+      if (data.id) {
+        if (data.id != ws.id && size == "small"){
+          return
+        }
+        const { x, y } = data.payload
+        if (allClients[data.id]) {
+          allClients[data.id].path.add({ x, y })
+        }
       }
     })
   }, [])
