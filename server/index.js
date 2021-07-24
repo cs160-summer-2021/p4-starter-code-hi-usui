@@ -1,5 +1,6 @@
 import express from "express"
 import { createServer } from "http"
+import _ from "lodash"
 import { Server } from "socket.io"
 
 import { PORT_EXPRESS } from "./config.js"
@@ -18,12 +19,16 @@ const getRandomInt = (min, max) => {
 }
 
 const randomColorHex = () => {
-  const validCharacters = "ABCDEF0123456789".split("")
+  const validCharacters = "ABCDEF0123456789"
   let hexColor = "#"
   for (let i = 0; i < 6; i++) {
     hexColor += validCharacters[getRandomInt(0, 16)]
   }
   return hexColor
+}
+
+const activeConnections = (connections) => {
+  return _.pickBy(connections, (v, k) => v.payload.active)
 }
 
 io.on("connection", async (socket) => {
@@ -34,11 +39,12 @@ io.on("connection", async (socket) => {
     id,
     socket,
     payload: {
+      active: true,
       pathProperties: { strokeColor: randomColorHex() },
       points: [],
     },
   }
-  for (let anyId in connections) {
+  for (let anyId in activeConnections(connections)) {
     connections[anyId].socket.emit("connectClient", {
       id,
       payload: connections[id].payload,
@@ -47,22 +53,24 @@ io.on("connection", async (socket) => {
       id: anyId,
       payload: connections[anyId].payload,
     })
+  }
+  for (let anyId in connections) {
     for (let point of connections[anyId].payload.points) {
-      connections[id].socket.emit("addPoint", { id, payload: point })
+      connections[id].socket.emit("addPoint", { id: anyId, payload: point })
     }
   }
 
   socket.on("onMouseMove", async (data) => {
     connections[data.id].payload.points.push(data.payload)
-    for (let anyId in connections) {
+    for (let anyId in activeConnections(connections)) {
       connections[anyId].socket.emit("addPoint", { id, payload: data.payload })
     }
   })
 
   socket.on("disconnect", () => {
     console.log(`Client '${id}' disconnected!`)
-    delete connections[id]
-    for (let anyId in connections) {
+    connections[id].active = false
+    for (let anyId in activeConnections(connections)) {
       connections[anyId].socket.emit("disconnectClient", id)
     }
   })
