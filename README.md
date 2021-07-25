@@ -7,7 +7,7 @@ Installing Redis shouldn't be mandatory, as Node.js will try to run one automati
 If on macOS, use [Homebrew package manager](https://brew.sh/)
 
 ```bash
-brew install node@14
+brew install node@16
 npm install
 ```
 
@@ -20,8 +20,7 @@ curl localhost:8000/draw
 
 ## Troubleshooting
 Having issues? @hi-usui tested this on:
-- Node v14.17.3, npm v6.14.13
-- Node v16.4.1, npm v7.18.1
+- Node v16.5.0, npm v7.19.1
 
 Literally from-scratch macOS installation to project running
 https://youtu.be/IGIFB3Ad6o4
