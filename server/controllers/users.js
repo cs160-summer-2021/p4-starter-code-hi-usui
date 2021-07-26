@@ -1,149 +1,22 @@
-import bcrypt from "bcryptjs"
 import mongoose from "mongoose"
 
-import { KEY_ROASTNTOAST } from "#src/config"
-import jwt from "#src/helpers/jwt"
 import { User } from "#src/models/_index"
 
-// import sendActivationEmail from "#src/services/sendgrid"
-
 export const Users = new (class Controller {
-  // activate: ExpressMiddleware<{}, {}> = async (req, res) => {
-  //   const { token } = req.params
-  //   let errors: any = {}
-  //   let decoded
-  //   try {
-  //     decoded = await jwt.verify(token, KEY_ROASTNTOAST)
-  //   } catch (err) {
-  //     return res.status(422).json({
-  //       activation:
-  //         "Activation token has expired! Register again with the same email address",
-  //     })
-  //   }
-  //   const user = await User.findById(decoded.id)
-  //   if (!user) {
-  //     errors.user = "User not found"
-  //     return res.status(422).json(errors)
-  //   }
-  //   if (user.activated) {
-  //     errors.activation = "User is already activated"
-  //     return res.status(422).json(errors)
-  //   }
-  //   user.activated = true
-  //   req.user = await user.save()
-  //   return res.json({
-  //     user: req.user,
-  //   })
-  // }
-
   current = async (req, res) => {
     res.json({ user: req.user.toJSON() })
   }
 
   delete = async (req, res) => {
-    // const { google_id } = req.user
-    // await User.deleteOne({ google_id })
-    // res.json({ success: true })
-
     await User.deleteOne({ _id: req.user.id })
     res.json({ success: true })
   }
 
-  login = async (req, res) => {
-    let { email, password } = req.body
-    let errors
-    email = email.toLowerCase()
-
-    const user = await User.findOne({ email })
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const payload = user.toJSON()
-      // if (!user.activated) {
-      //   errors.activation = `Account has not been activated yet. Check your inbox at ${email}`
-      //   return res.status(403).json(errors)
-      // }
-
-      const token = await jwt.sign(payload, KEY_ROASTNTOAST)
-      return res.json({
-        success: true,
-        jwt: token,
-      })
-    }
-    return res.status(400).json({ success: false, message: "Login failed" })
-  }
-
-  register = async (req, res) => {
-    let { email, name, password } = req.body
-    let errors = {}
-    email = email.toLowerCase()
-
+  new = async (req, res) => {
     await mongoose.connection.transaction(async (session) => {
-      const user = await User.findOne({ email }).session(session)
-      if (user) {
-        errors.email = "User with that email already exists"
-        return res.status(422).json(errors)
-      }
-      const salt = await bcrypt.genSalt(10)
-      const hash = await bcrypt.hash(password, salt)
-      const newUser = new User({
-        email,
-        name,
-        password: hash,
-      })
-      // const activationToken = await jwt.sign(
-      //   { id: newUser.id },
-      //   KEY_ROASTNTOAST,
-      //   {
-      //     expiresIn: EXPIRE_TIME_ACTIVATION_EMAIL / 1000,
-      //   }
-      // )
-      // newUser.activation_token = activationToken
-      // await sendActivationEmail({
-      //   email: newUser.email,
-      //   activationToken,
-      // })
-      const savedUser = await newUser.save({ session })
-      return res.json({ user: savedUser })
+      const user = new User()
+      await user.save({ session })
+      return res.json({ user: user.id })
     })
   }
-
-  exists = async (req, res) => {
-    let { email } = req.params
-    email = email.toLowerCase()
-
-    const user = await User.findOne({ email })
-    if (user) {
-      res.json({
-        success: true,
-        msg: `User ${email} exists`,
-      })
-    }
-    return res.json({
-      success: false,
-      msg: `User with the given email address of ${email} does not exist`,
-    })
-  }
-
-  // googleAuthorize = async ({}, {}) => {
-  //   passport.authenticate("google", {
-  //     accessType: "offline",
-  //     hd: "berkeley.edu",
-  //     prompt: "consent",
-  //     scope: [
-  //       "profile",
-  //       "email",
-  //       "https://www.googleapis.com/auth/calendar.app.created",
-  //       "https://www.googleapis.com/auth/calendar.freebusy",
-  //     ],
-  //     session: false,
-  //   })
-  // }
-
-  // googleCallback = async (req, res) => {
-  //   const { google_id } = req.user
-  //   const user = await User.findOne({ google_id })
-  //   const userToken = await jwt.sign(user.toJSON(), KEY_ROASTNTOAST)
-  //   user.jwt = userToken
-  //   await user.save()
-  //   return res.json({ success: true, jwt: userToken })
-  // }
 })()
