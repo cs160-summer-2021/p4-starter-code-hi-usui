@@ -37,53 +37,61 @@ const activeConnections = (connections) => {
 }
 
 io.on("connection", async (socket) => {
+  const { device } = socket.handshake.query
   const id = socket.id
-  console.log(`Client id '${id}' connected!`)
+  console.log(`Client {id '${id}', device: '${device}'} connected!`)
 
   connections[id] = {
     id,
     socket,
     payload: {
       active: true,
-      pathProperties: { strokeColor: randomColorHex() },
-      points: [],
+      color: randomColorHex(),
+      device,
     },
   }
-  for (let anyId in activeConnections(connections)) {
-    connections[anyId].socket.emit("connectClient", {
-      id,
-      payload: connections[id].payload,
-    })
-    connections[id].socket.emit("connectClient", {
-      id: anyId,
-      payload: connections[anyId].payload,
-    })
-  }
-  for (let anyId in connections) {
-    for (let point of connections[anyId].payload.points) {
-      connections[id].socket.emit("addPoint", { id: anyId, payload: point })
-    }
-  }
-
-  socket.on("onMouseMove", async (data) => {
-    if (connections[data.id]) {
-      connections[data.id].payload.points.push(data.payload)
-      for (let anyId in activeConnections(connections)) {
-        connections[anyId].socket.emit("addPoint", {
-          id,
-          payload: data.payload,
-        })
-      }
-    }
-  })
 
   socket.on("disconnect", () => {
     console.log(`Client '${id}' disconnected!`)
     connections[id].active = false
     for (let anyId in activeConnections(connections)) {
-      connections[anyId].socket.emit("disconnectClient", id)
+      connections[anyId].socket.emit("clientDisconnect", id)
     }
   })
+
+  for (let anyId in activeConnections(connections)) {
+    if (anyId != id) {
+      connections[anyId].socket.emit("clientConnect", {
+        id,
+        payload: connections[id].payload,
+      })
+    }
+  }
+  // for (let anyId in connections) {
+  //   for (let point of connections[anyId].payload.points) {
+  //     connections[id].socket.emit("addPoint", { id: anyId, payload: point })
+  //   }
+  // }
+
+  // socket.on("onMouseMove", async (data) => {
+  //   if (connections[data.id]) {
+  //     connections[data.id].payload.points.push(data.payload)
+  //     for (let anyId in activeConnections(connections)) {
+  //       connections[anyId].socket.emit("addPoint", {
+  //         id,
+  //         payload: data.payload,
+  //       })
+  //     }
+  //   }
+  // })
+
+  // socket.on("disconnect", () => {
+  //   console.log(`Client '${id}' disconnected!`)
+  //   connections[id].active = false
+  //   for (let anyId in activeConnections(connections)) {
+  //     connections[anyId].socket.emit("clientDisconnect", id)
+  //   }
+  // })
 })
 app.use((req, res, next) => {
   req.io = io

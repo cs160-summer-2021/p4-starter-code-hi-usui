@@ -1,15 +1,16 @@
-import Spinner from "components/common/Spinner"
-import React, { useEffect } from "react"
-import QRCode from "react-qr-code"
-import '../sass/Playlist.scss';
+import Spinner from "components/common/Spinner";
+import React, { useEffect } from "react";
+import QRCode from "react-qr-code";
+
+import "../sass/Playlist.scss";
 
 export default (props) => {
-  const { playlistId } = props.match.params
+  const { playlistId } = props.match.params;
   return (
     <div className="container-fluid">
       <div className="row playlist-name">
         <div className="col-sm-12 playlist-name">
-          <p>"Untitled Playlist"</p> 
+          <p>"Untitled Playlist"</p>
         </div>
       </div>
 
@@ -21,7 +22,10 @@ export default (props) => {
           <h2>3. Song 3</h2>
         </div>
         <div className="col-sm-4 middle-playlist-sec" align="center">
-          <QRCode value={`${new URL("/", window.location.href)}users/new`} size="200" />
+          <QRCode
+            value={`${new URL("/", window.location.href)}users/new`}
+            size={200}
+          />
         </div>
         <div className="col-sm-4 middle-playlist-sec" align="center">
           <h1>?? current users</h1>
@@ -35,7 +39,6 @@ export default (props) => {
           <h1>Current Song: ??</h1>
         </div>
       </div>
-
 
       {/* <div className="song-queue">
         <p>Current Queue</p>
@@ -55,5 +58,5 @@ export default (props) => {
         <p>Current Song Playing: ??</p>
       </div> */}
     </div>
-  )
-}
+  );
+};

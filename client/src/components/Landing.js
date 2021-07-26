@@ -1,29 +1,85 @@
-// import * as actions from "actions/item"
-import React, { useEffect } from "react"
+// https://dev.to/bravemaster619/how-to-use-socket-io-client-correctly-in-react-app-o65
+//  How to use socket.io-client correctly in React app
+import { PLAYLIST_SET, PLAYLIST_USER_CONNECT } from "actions/types"
+import axios from "axios"
+import Spinner from "components/common/Spinner"
+import { SocketContext } from "context/socket"
+import { useWindowDimensions } from "helpers/_index"
+import React, { useContext, useEffect, useState } from "react"
 import QRCode from "react-qr-code"
+import { useDispatch, useSelector } from "react-redux"
+import { useActions } from "react-redux-actions-hook"
 import { useHistory, useLocation } from "react-router-dom"
 
 const useQuery = () => new URLSearchParams(useLocation().search)
 
 export default () => {
-  // const action = useActions(actions)
+  const socket = useContext(SocketContext)
+  const dispatch = useDispatch()
   const history = useHistory()
   const query = useQuery()
   const size = query.get("size")
-  // const { auth, item } = useSelector((state) => ({
-  //   item: state.item,
-  // }));
+  const { height, width } = useWindowDimensions()
+  const { playlist } = useSelector((state) => ({
+    playlist: state.playlist,
+  }))
 
-  useEffect(() => {}, [])
-  return (
-    <div className="Landing" style={{ backgroundColor: "red" }}>
-      <div>Click QR Code if you are having trouble scanning on your phone</div>
+  useEffect(() => {
+    ;(async () => {
+      const res = await axios.get("/api/playlists/new")
+      const playlistId = res.data._id
+      dispatch({ type: PLAYLIST_SET, payload: playlistId })
+    })()
 
-      <div>
-        <a href={`/newPlaylist`}>
-          <QRCode value={`${new URL("/", window.location.href)}newPlaylist`} />
+    socket.on("clientConnect", (data) => {
+      dispatch({
+        type: PLAYLIST_USER_CONNECT,
+        payload: { id: data.id, device: data.payload.device },
+      })
+    })
+  }, [])
+
+  const users = () => {
+    if (
+      playlist.playlistId &&
+      playlist.users.length &&
+      playlist.users.some((u) => u.device == "phone")
+    ) {
+      setTimeout(() => {
+        history.push(`/playlists/${playlist.playlistId}/display`)
+      }, 5000)
+      return (
+        <div style={{ color: "red" }}>
+          Users have joined your playlist! Redirecting to playlist in 5
+          seconds....
+          <Spinner />
+        </div>
+      )
+    }
+  }
+
+  const qr = () => {
+    if (playlist.playlistId) {
+      return (
+        <a href={`/playlists/${playlist.playlistId}/phone`}>
+          <QRCode
+            value={`${new URL("/", window.location.href)}playlists/${
+              playlist.playlistId
+            }/phone`}
+          />
         </a>
+      )
+    }
+  }
+
+  return (
+    <div className="Landing">
+      <div>Use your phone to go to http://roastntoast.com</div>
+      <div>
+        height: {height}, width: {width}
       </div>
+      {users()}
+      {qr()}
     </div>
   )
 }
