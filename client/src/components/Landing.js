@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { useActions } from "react-redux-actions-hook"
 import { useHistory, useLocation } from "react-router-dom"
 
+import "../sass/Landing.scss"
+
 const useQuery = () => new URLSearchParams(useLocation().search)
 
 export default () => {
@@ -73,13 +75,26 @@ export default () => {
   }
 
   return (
-    <div className="Landing">
-      <div>Use your phone to go to http://roastntoast.com</div>
-      <div>
-        height: {height}, width: {width}
+    <div className="container-fluid">
+      <div className="row init-landing">
+        <div className="col-sm-12">
+          <h1>RoastnToast</h1>
+        </div>
       </div>
-      {users()}
-      {qr()}
+      <div className="row qr">
+        <div className="col-sm-12" align="center">
+          {qr()}
+          <h3>Click on QR code if scanning unavailable.</h3>
+        </div>
+        {/* <div className="col-sm-6">
+          {users()}
+        </div> */}
+      </div>
+      <div className="row height-width">
+        <div className="col-sm-12">
+          <h1>height: {height}, width: {width}</h1>
+        </div>
+      </div>
     </div>
   )
 }
