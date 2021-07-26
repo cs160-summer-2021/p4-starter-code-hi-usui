@@ -1,13 +1,17 @@
 import mongoose from "mongoose"
 
 const ScanSchema = new mongoose.Schema({
-  scan_in: {
+  scan_end: {
     type: Date,
     default: Date.now,
   },
-  scan_out: {
+  scan_start: {
     type: Date,
-    default: null,
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
   },
 })
 
