@@ -1,0 +1,4 @@
+export const PLAYLIST_LOADING = "PLAYLIST_LOADING"
+export const PLAYLIST_NEW = "PLAYLIST_NEW"
+export const ERRORS_CLEAR = "ERRORS_CLEAR"
+export const ERRORS_GET = "ERRORS_GET"
