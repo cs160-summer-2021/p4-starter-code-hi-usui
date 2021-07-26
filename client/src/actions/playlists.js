@@ -6,5 +6,5 @@ export const playlistNew = (history) => async (dispatch) => {
   const res = await axios.get("/api/playlists/new");
   const playlistId = res.data._id;
   dispatch({ type: PLAYLIST_NEW, payload: playlistId });
-  history.push(`/playlists/${playlistId}`);
+  history.push(`/playlists/${playlistId}/display`);
 };
