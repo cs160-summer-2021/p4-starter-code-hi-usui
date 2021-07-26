@@ -9,6 +9,10 @@ const PlaylistSchema = new mongoose.Schema({
     type: String,
     default: "Untitled Playlist",
   },
+  users: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
   scans: {
     type: [mongoose.Schema.Types.ObjectId],
     default: [],

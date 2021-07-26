@@ -1,95 +1,145 @@
-.Playlist {
+@import "~bootstrap/scss/bootstrap";
+
+.container-fluid {
   display: grid;
   grid-template-rows: repeat(4, minmax(min-content, max-content));
   background-color: gold;
-  font-size: 6rem;
+  font-size: 4rem;
   height: 100%;
   width: 100%;
   justify-items: center;
+  //  border: 2px solid black;
+  padding: 0 !important;
 
-  &__title {
-    font-size: 30rem;
-    color: darkgreen;
-  }
-
-  &__resultContainer {
-    display: grid;
-    justify-items: center;
-  }
-  &__loser {
-    font-size: 5rem;
-    color: orangered;
-  }
-  &__top {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-    justify-items: center;
-  }
-  &__guessControlContainer {
-    display: grid;
-    justify-items: center;
-  }
-  &__bottom {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-    justify-items: center;
-  }
-  &__bottomContainer-2 {
-    display: grid;
-    grid-row-gap: 2rem;
-    text-align: center;
-  }
-  &__guessContainer {
-    font-size: 5rem;
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-  }
-  &__correctGuess {
-    color: darkgreen;
-  }
-  &__incorrectGuess {
-    color: orangered;
-  }
-  &__title {
-    padding: 1rem;
-    text-align: center;
-    font-size: 2rem;
-    &--started {
-      display: inline-block;
-      animation: fading 1s ease infinite;
-    }
-    &--pending {
-      display: inline-block;
+  & .row.playlist-name {
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    box-shadow: 5px 5px 15px #888888;
+    & p {
+      font-size: 5rem;
+      text-align: center;
+      text-shadow: 2px 2px 5px #888888;
     }
   }
-  &__info {
-    grid-auto-flow: column;
-    display: grid;
-    padding: 1rem;
-    grid-column-gap: 3rem;
+
+  & .row.middle-playlist {
+    width: 100%;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    // border-bottom: 2px solid black;
+    background-color: #f0e68c;
+    // justify-items: center;
+    margin-bottom: 0;
+    // border: 2px solid black;
+    & .middle-playlist-sec {
+      & h1 {
+        text-shadow: 2px 2px 5px #888888;
+      }
+
+      & h2 {
+        // text-shadow: 2px 2px 5px #888888;
+      }
+      // border: 2px solid black;
+    }
+  }
+
+  & .row.curr-song {
+    width: 100%;
+    height: 100%;
+    margin-top: 0;
+    padding-top: 2rem;
     justify-items: center;
+    background-color: #f0e68c;
+    & h1 {
+      text-align: center;
+      text-shadow: 2px 2px 5px #888888;
+    }
   }
-  &__answer {
-    background-color: $color-grey-light-1;
-    box-shadow: $shadow-dark;
-    width: 7rem;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-  }
-  &__letter {
-    font-size: 5rem;
-  }
-  &__button {
-    background-color: #4caf50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-  }
+
+  // &__title {
+  //   font-size: 30rem;
+  //   color: darkgreen;
+  // }
+
+  // &__resultContainer {
+  //   display: grid;
+  //   justify-items: center;
+  // }
+  // &__loser {
+  //   font-size: 5rem;
+  //   color: orangered;
+  // }
+  // &__top {
+  //   display: grid;
+  //   grid-auto-flow: column;
+  //   align-items: center;
+  //   justify-items: center;
+  // }
+  // &__guessControlContainer {
+  //   display: grid;
+  //   justify-items: center;
+  // }
+  // &__bottom {
+  //   display: grid;
+  //   grid-auto-flow: column;
+  //   align-items: center;
+  //   justify-items: center;
+  // }
+  // &__bottomContainer-2 {
+  //   display: grid;
+  //   grid-row-gap: 2rem;
+  //   text-align: center;
+  // }
+  // &__guessContainer {
+  //   font-size: 5rem;
+  //   display: grid;
+  //   grid-template-rows: 1fr 1fr 1fr;
+  // }
+  // &__correctGuess {
+  //   color: darkgreen;
+  // }
+  // &__incorrectGuess {
+  //   color: orangered;
+  // }
+  // &__title {
+  //   padding: 1rem;
+  //   text-align: center;
+  //   font-size: 2rem;
+  //   &--started {
+  //     display: inline-block;
+  //     animation: fading 1s ease infinite;
+  //   }
+  //   &--pending {
+  //     display: inline-block;
+  //   }
+  // }
+  // &__info {
+  //   grid-auto-flow: column;
+  //   display: grid;
+  //   padding: 1rem;
+  //   grid-column-gap: 3rem;
+  //   justify-items: center;
+  // }
+  // &__answer {
+  //   background-color: grey;
+  //   // box-shadow: $shadow-dark;
+  //   width: 7rem;
+  //   display: grid;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
+  // &__letter {
+  //   font-size: 5rem;
+  // }
+  // &__button {
+  //   background-color: #4caf50; /* Green */
+  //   border: none;
+  //   color: white;
+  //   padding: 15px 32px;
+  //   text-align: center;
+  //   text-decoration: none;
+  //   display: inline-block;
+  //   font-size: 16px;
+  // }
 }

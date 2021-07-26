@@ -1,10 +1,10 @@
-import { SocketContext } from "context/socket";
-import React, { useEffect } from "react";
-import QRCode from "react-qr-code";
+import { SocketContext } from "context/socket"
+import React, { useEffect } from "react"
+import QRCode from "react-qr-code"
 
 export default (props) => {
-  const socket = useContext(SocketContext);
-  const { playlistId } = props.match.params;
+  const socket = useContext(SocketContext)
+  const { playlistId } = props.match.params
 
   return (
     <div className="Playlist">
@@ -17,5 +17,5 @@ export default (props) => {
       <div>test</div>
       <div>test</div>
     </div>
-  );
-};
+  )
+}
