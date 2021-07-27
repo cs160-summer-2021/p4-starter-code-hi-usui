@@ -27,7 +27,7 @@ export default () => {
   }))
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const res = await axios.get("/api/playlists/new")
       const playlistId = res.data._id
       dispatch({ type: PLAYLIST_SET, payload: playlistId })
@@ -46,6 +46,7 @@ export default () => {
       playlist.playlistId &&
       playlist.users.length &&
       playlist.users.some((u) => u.device == "phone")
+      
     ) {
       setTimeout(() => {
         history.push(`/playlists/${playlist.playlistId}/display`)
@@ -92,7 +93,9 @@ export default () => {
       </div>
       <div className="row height-width">
         <div className="col-sm-12">
-          <h1>height: {height}, width: {width}</h1>
+          <h1>
+            height: {height}, width: {width}
+          </h1>
         </div>
       </div>
     </div>

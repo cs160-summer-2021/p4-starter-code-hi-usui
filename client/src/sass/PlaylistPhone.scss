@@ -1,0 +1,87 @@
+@import "~bootstrap/scss/bootstrap";
+
+.playlist-phone {
+  display: grid;
+  grid-template-rows: repeat(4, minmax(min-content, max-content));
+  background-color: gold;
+  font-size: 4rem;
+  height: 896px;
+  width: 414px;
+  justify-items: center;
+  //  border: 2px solid black;
+  padding: 0 !important;
+
+  & .roastntoast {
+      margin-top: 25px;
+
+      & h1 {
+          font-size: 5rem;
+          text-align: center;
+          text-shadow: 2px 2px 5px #888888;
+      }
+  }
+
+  & .top {
+    // border-bottom: 2px solid black;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    & .playlist-name {
+        width: 250px;
+        //  border: 2px solid black;
+        display: inline-block;
+        padding-left: 5rem;
+
+        & h1 {
+            font-size: 3rem;
+        }
+    }
+
+    & .user-name {
+        width: 164px;
+        display: inline-block;
+        padding-left: 5rem;
+
+        & h1 {
+            font-size: 3rem;
+        }
+    }
+  }
+
+  & .content {
+      background-color: #f0e68c;
+      width: 100%;
+      height: 630px;
+      padding-top: 20px;
+    //   border: 2px solid black;
+
+    & h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+  }
+
+  & .footer {
+      width:100%;
+      padding-top: 4rem;
+      & .add-song {
+          width: 275px;
+          display: inline-block;
+          padding-left: 5rem;
+
+          & h1 {
+              font-size: 3rem;
+          }
+      }
+      & .qr {
+          width: 114px;
+          display: inline-block;
+          padding-left: 5rem;
+
+          & h1 {
+            font-size: 3rem;
+        }
+      }
+  }
+}

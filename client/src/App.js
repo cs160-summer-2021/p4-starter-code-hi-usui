@@ -1,6 +1,6 @@
 import Landing from "components/Landing";
 import PlaylistDisplay from "components/PlaylistDisplay";
-import PlaylistPhone from "components/PlaylistDisplay";
+import PlaylistPhone from "components/PlaylistPhone";
 import Index from "components/index";
 import { SocketContext, socket } from "context/socket";
 import React, { Component } from "react";
