@@ -20,7 +20,6 @@ export default () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const query = useQuery()
-  const size = query.get("size")
   const { height, width } = useWindowDimensions()
   const { playlist } = useSelector((state) => ({
     playlist: state.playlist,
@@ -52,15 +51,17 @@ export default () => {
       }, 5000)
       return (
         <div style={{ color: "red" }}>
+          <Spinner />
           Users have joined your playlist! Redirecting to playlist in 5
           seconds....
-          <Spinner />
         </div>
       )
     }
   }
 
   const qr = () => {
+    const size = query.get("size")
+    console.log(size)
     if (playlist.playlistId) {
       return (
         <a href={`/playlists/${playlist.playlistId}/phone`}>
@@ -68,6 +69,7 @@ export default () => {
             value={`${new URL("/", window.location.href)}playlists/${
               playlist.playlistId
             }/phone`}
+            size={size ? size : 256}
           />
         </a>
       )
@@ -86,9 +88,7 @@ export default () => {
           {qr()}
           <h3>Click on QR code if scanning unavailable.</h3>
         </div>
-        {/* <div className="col-sm-6">
-          {users()}
-        </div> */}
+        <div className="col-sm-6">{users()}</div>
       </div>
       <div className="row height-width">
         <div className="col-sm-12">
