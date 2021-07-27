@@ -27,7 +27,7 @@ export default () => {
   }))
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const res = await axios.get("/api/playlists/new")
       const playlistId = res.data._id
       dispatch({ type: PLAYLIST_SET, payload: playlistId })
@@ -46,7 +46,6 @@ export default () => {
       playlist.playlistId &&
       playlist.users.length &&
       playlist.users.some((u) => u.device == "phone")
-      
     ) {
       setTimeout(() => {
         history.push(`/playlists/${playlist.playlistId}/display`)
