@@ -1,10 +1,17 @@
-import { PLAYLIST_NEW } from "actions/types"
-import axios from "axios"
-import { dispatch } from "store"
+import { USERS_SET_CURRENT } from "actions/types";
+import axios from "axios";
+import setAuthToken from "helpers/setAuthToken";
 
-export const userNew = async (history) => {
-  const res = await axios.get("/api/users/new")
-  const playlistId = res.data._id
-  dispatch({ type: PLAYLIST_NEW, payload: playlistId })
-  history.push(`/playlists/${playlistId}/display`)
-}
+export const userLogin = async () => {
+  const res = await axios.get("/api/users/new");
+  console.log(res);
+  const playlistId = res.data._id;
+  return playlistId;
+  // history.push(`/playlists/${playlistId}/display`);
+};
+
+export const userLogout = (history) => async (dispatch) => {
+  delete localStorage.jwt;
+  setAuthToken(false);
+  // dispatch(setCurrentUser({}));
+};

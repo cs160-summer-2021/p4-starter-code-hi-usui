@@ -1,5 +1,5 @@
-import Landing from "components/Landing"
-import Canvas from "components/canvas"
+import Landing from "components/Landing";
+import Canvas from "components/canvas";
 
 export default () => {
   return (
@@ -9,5 +9,5 @@ export default () => {
         <Canvas />
       </canvas>
     </div>
-  )
-}
+  );
+};

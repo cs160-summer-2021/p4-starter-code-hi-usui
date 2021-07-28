@@ -1,12 +1,34 @@
-import { SocketContext } from "context/socket"
-import React, { useEffect } from "react"
-import QRCode from "react-qr-code"
+import TextField from "components/common/TextField";
+import { SocketContext } from "context/socket";
+import React, { useContext, useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 
-import "../sass/PlaylistPhone.scss"
+import "../sass/PlaylistPhone.scss";
 
 export default (props) => {
-  // const socket = useContext(SocketContext)
-  const { playlistId } = props.match.params
+  const socket = useContext(SocketContext);
+  const { playlistId } = props.match.params;
+  const [songs, setSongs] = useState([]);
+  const [addSong, setAddSong] = useState([]);
+
+  const renderSongs = () => {
+    return songs.map((song, index) => (
+      <div key={index}>
+        <h1>
+          - {index + 1}. {song.title}
+        </h1>
+      </div>
+    ));
+  };
+
+  const onAddSongChange = (e) => {
+    setAddSong(e.target.value);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSongs([...songs, { title: addSong }]);
+  };
 
   return (
     <div className="playlist-phone">
@@ -24,37 +46,29 @@ export default (props) => {
       </div>
 
       <div className="content" align="center">
-        <div className="songs">
-          <h1>- 1. Song 1</h1>
-          <h1>- 2. Song 2</h1>
-          <h1>- 3. Song 3</h1>
-          <h1>- 4. Song 4</h1>
-          <h1>- 5. Song 5</h1>
-          <h1>- 6. Song 6</h1>
-          <h1>- 7. Song 7</h1>
-        </div>
+        <div className="songs">{renderSongs()}</div>
       </div>
 
       <div className="footer">
         <div className="add-song">
-          <h1>+ Add a song</h1>
+          <form onSubmit={onSubmit}>
+            <TextField
+              name="songTitle"
+              onChange={onAddSongChange}
+              placeholder="Song title"
+              type="text"
+              value={addSong}
+            />
+            <input className="" type="submit" value="+ Add a song" />
+          </form>
         </div>
         <div className="qr">
-        <QRCode
+          <QRCode
             value={`${new URL("/", window.location.href)}users/new`}
             size={70}
           />
         </div>
       </div>
-
-      {/* <div className="Playlist__top">
-        <QRCode value={`${new URL("/", window.location.href)}users/new`} />
-      </div>
-      <div className="Playlist__middle">Playlist Name</div>
-      <div className="Playlist__bottom">Playlist Name</div>
-      <div>Playlist Id: {playlistId}</div>
-      <div>test</div>
-      <div>test</div> */}
     </div>
-  )
-}
+  );
+};

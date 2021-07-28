@@ -1,45 +1,45 @@
-import express from "express"
-import { createServer } from "http"
-import _ from "lodash"
-import { Server } from "socket.io"
+import express from "express";
+import { createServer } from "http";
+import _ from "lodash";
+import { Server } from "socket.io";
 
-import { playlists, users } from "#src/routes/_index"
-import "#src/services/mongodb"
-import "#src/services/passport"
-import "#src/services/redis"
+import { playlists, users } from "#src/routes/_index";
+import "#src/services/mongodb";
+import "#src/services/passport";
+import "#src/services/redis";
 
-import { PORT_EXPRESS } from "./config.js"
+import { PORT_EXPRESS } from "./config.js";
 
-const app = express()
-const server = createServer(app)
-const io = new Server(server)
+const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
-const connections = {}
+const connections = {};
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 const getRandomInt = (min, max) => {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min) + min) // The maximum is exclusive and the minimum is inclusive
-}
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+};
 
 const randomColorHex = () => {
-  const validCharacters = "ABCDEF0123456789"
-  let hexColor = "#"
+  const validCharacters = "ABCDEF0123456789";
+  let hexColor = "#";
   for (let i = 0; i < 6; i++) {
-    hexColor += validCharacters[getRandomInt(0, 16)]
+    hexColor += validCharacters[getRandomInt(0, 16)];
   }
-  return hexColor
-}
+  return hexColor;
+};
 
 const activeConnections = (connections) => {
-  return _.pickBy(connections, (v, k) => v.payload.active)
-}
+  return _.pickBy(connections, (v, k) => v.payload.active);
+};
 
 io.on("connection", async (socket) => {
-  const { device } = socket.handshake.query
-  const id = socket.id
-  console.log(`Client {id '${id}', device: '${device}'} connected!`)
+  const { device } = socket.handshake.query;
+  const id = socket.id;
+  console.log(`Client {id '${id}', device: '${device}'} connected!`);
 
   connections[id] = {
     id,
@@ -49,22 +49,22 @@ io.on("connection", async (socket) => {
       color: randomColorHex(),
       device,
     },
-  }
+  };
 
   socket.on("disconnect", () => {
-    console.log(`Client '${id}' disconnected!`)
-    connections[id].active = false
+    console.log(`Client '${id}' disconnected!`);
+    connections[id].active = false;
     for (let anyId in activeConnections(connections)) {
-      connections[anyId].socket.emit("clientDisconnect", id)
+      connections[anyId].socket.emit("clientDisconnect", id);
     }
-  })
+  });
 
   for (let anyId in activeConnections(connections)) {
     if (anyId != id) {
       connections[anyId].socket.emit("clientConnect", {
         id,
         payload: connections[id].payload,
-      })
+      });
     }
   }
   // for (let anyId in connections) {
@@ -92,18 +92,18 @@ io.on("connection", async (socket) => {
   //     connections[anyId].socket.emit("clientDisconnect", id)
   //   }
   // })
-})
+});
 app.use((req, res, next) => {
-  req.io = io
-  next()
-})
-app.use(express.urlencoded({ extended: true }))
-const apiRouter = express.Router()
-app.use("/api", apiRouter)
-apiRouter.use("/users", users)
-apiRouter.use("/playlists", playlists)
-server.listen(PORT_EXPRESS)
-console.log(`Server now listening on port ${PORT_EXPRESS}`)
+  req.io = io;
+  next();
+});
+app.use(express.urlencoded({ extended: true }));
+const apiRouter = express.Router();
+app.use("/api", apiRouter);
+apiRouter.use("/users", users);
+apiRouter.use("/playlists", playlists);
+server.listen(PORT_EXPRESS);
+console.log(`Server now listening on port ${PORT_EXPRESS}`);
 
-process.on("SIGINT", () => process.exit(0))
-process.on("SIGTERM", () => process.exit(0))
+process.on("SIGINT", () => process.exit(0));
+process.on("SIGTERM", () => process.exit(0));
