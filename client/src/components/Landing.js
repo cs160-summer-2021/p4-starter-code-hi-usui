@@ -46,33 +46,43 @@ export default () => {
       playlist.users.length &&
       playlist.users.some((u) => u.device == "phone")
     ) {
-      setTimeout(() => {
-        history.push(`/playlists/${playlist.playlistId}/display`)
-      }, 5000)
-      return (
-        <div style={{ color: "red" }}>
-          <Spinner />
-          Users have joined your playlist! Redirecting to playlist in 5
-          seconds....
-        </div>
-      )
     }
   }
 
   const qr = () => {
     const size = query.get("size")
     console.log(size)
+
     if (playlist.playlistId) {
-      return (
-        <a href={`/playlists/${playlist.playlistId}/phone`}>
-          <QRCode
-            value={`${new URL("/", window.location.href)}playlists/${
-              playlist.playlistId
-            }/phone`}
-            size={size ? size : 256}
-          />
-        </a>
-      )
+      if (
+        playlist.users.length &&
+        playlist.users.some((u) => u.device == "phone")
+      ) {
+        setTimeout(() => {
+          history.push(`/playlists/${playlist.playlistId}/display`)
+        }, 5000)
+        return (
+          <div style={{ color: "red" }}>
+            Users have joined your playlist! Redirecting to playlist in 5
+            seconds....
+            <Spinner />
+          </div>
+        )
+      } else {
+        return (
+          <div>
+            <h3>Click on QR code if scanning unavailable.</h3>
+            <a href={`/playlists/${playlist.playlistId}/phone`}>
+              <QRCode
+                value={`${new URL("/", window.location.href)}playlists/${
+                  playlist.playlistId
+                }/phone`}
+                size={size ? size : 256}
+              />
+            </a>
+          </div>
+        )
+      }
     }
   }
 
@@ -86,7 +96,6 @@ export default () => {
       <div className="row qr">
         <div className="col-sm-12" align="center">
           {qr()}
-          <h3>Click on QR code if scanning unavailable.</h3>
         </div>
         <div className="col-sm-6">{users()}</div>
       </div>
