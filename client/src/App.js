@@ -2,26 +2,12 @@ import Landing from "components/Landing";
 import PlaylistDisplay from "components/PlaylistDisplay";
 import PlaylistPhone from "components/PlaylistPhone";
 import Index from "components/index";
-import { SocketContext, socket } from "context/socket";
+import { SocketContext, socket } from "context/sockets";
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "sass/_index.scss";
 import store from "store";
-
-if (localStorage.user) {
-  setAuthToken(localStorage.user);
-  try {
-    store.dispatch(
-      setCurrentUser({
-        user: jwt_decode(localStorage.jwtToken),
-        jwt: localStorage.jwtToken,
-      })
-    );
-  } catch (e) {
-    delete localStorage.jwtToken;
-  }
-}
 
 class App extends Component {
   render = () => {

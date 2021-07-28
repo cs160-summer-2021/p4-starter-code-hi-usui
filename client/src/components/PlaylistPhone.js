@@ -1,15 +1,28 @@
 import TextField from "components/common/TextField";
-import { SocketContext } from "context/socket";
+import { SocketContext } from "context/sockets";
 import React, { useContext, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-
-import "../sass/PlaylistPhone.scss";
+import { useSelector } from "react-redux";
+import "sass/PlaylistPhone.scss";
 
 export default (props) => {
-  const socket = useContext(SocketContext);
+  const sPromise = useContext(SocketContext);
   const { playlistId } = props.match.params;
   const [songs, setSongs] = useState([]);
   const [addSong, setAddSong] = useState([]);
+  const currentUser = useSelector((state) => state.user.currentUser);
+
+  useEffect(() => {
+    (async () => {
+      const socket = await sPromise;
+      if (currentUser) {
+        socket.emit("user:add", { playlistId, userId: currentUser });
+        socket.on("disconnect", (socket) => {
+          console.log(`Client '${socket.id}' disconnected from server!`);
+        });
+      }
+    })();
+  }, [currentUser]);
 
   const renderSongs = () => {
     return songs.map((song, index) => (

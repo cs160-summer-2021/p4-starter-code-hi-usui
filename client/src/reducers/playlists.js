@@ -10,10 +10,14 @@ export default function (state = initialState, action) {
         playlistId: action.payload,
       };
     case PLAYLIST_USER_CONNECT:
-      return {
-        ...state,
-        users: [...state.users, { ...action.payload }],
-      };
+      if (action.payload.playlistId == state.playlistId) {
+        return {
+          ...state,
+          users: [...state.users, action.payload.userId],
+        };
+      } else {
+        return state;
+      }
     default:
       return state;
   }

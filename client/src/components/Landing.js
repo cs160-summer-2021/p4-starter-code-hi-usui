@@ -3,23 +3,24 @@
 import { PLAYLIST_SET, PLAYLIST_USER_CONNECT } from "actions/types";
 import axios from "axios";
 import Spinner from "components/common/Spinner";
-import { SocketContext } from "context/socket";
+import { SocketContext } from "context/sockets";
 import { useWindowDimensions } from "helpers/_index";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { useDispatch, useSelector } from "react-redux";
-import { useActions } from "react-redux-actions-hook";
 import { useHistory, useLocation } from "react-router-dom";
-
-import "../sass/Landing.scss";
+import "sass/Landing.scss";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 export default () => {
-  const socket = useContext(SocketContext);
+  const sPromise = useContext(SocketContext);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const query = useQuery();
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const { height, width } = useWindowDimensions();
 
   const { playlist } = useSelector((state) => ({
@@ -27,26 +28,30 @@ export default () => {
   }));
   useEffect(() => {
     (async () => {
-      const res = await axios.get("/api/playlists/new");
-      const playlistId = res.data._id;
-      dispatch({ type: PLAYLIST_SET, payload: playlistId });
+      if (currentUser) {
+        const providedPlaylistId = query.get("playlist");
+        let playlistId;
+        if (!providedPlaylistId) {
+          playlistId = (await axios.get("/api/playlists/new")).data.id;
+        } else {
+          playlistId = providedPlaylistId;
+        }
+        const socket = await sPromise;
+        dispatch({ type: PLAYLIST_SET, payload: playlistId });
+        socket.on("clientConnect", (data) => {
+          dispatch({
+            type: PLAYLIST_USER_CONNECT,
+            payload: { playlistId: data.playlistId, userId: data.userId },
+          });
+        });
+      }
     })();
-
-    socket.on("clientConnect", (data) => {
-      dispatch({
-        type: PLAYLIST_USER_CONNECT,
-        payload: { id: data.id, device: data.payload.device },
-      });
-    });
-  }, []);
+  }, [currentUser]);
 
   const qr = () => {
     const size = query.get("size");
     if (playlist.playlistId) {
-      if (
-        playlist.users.length &&
-        playlist.users.some((u) => u.device == "phone")
-      ) {
+      if (playlist.users.length) {
         setTimeout(() => {
           history.push(`/playlists/${playlist.playlistId}/display`);
         }, 5000);

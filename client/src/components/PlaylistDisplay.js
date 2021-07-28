@@ -1,11 +1,47 @@
-import Spinner from "components/common/Spinner";
-import React, { useEffect, useState } from "react";
+import { PLAYLIST_SET, PLAYLIST_USER_CONNECT } from "actions/types";
+import { SocketContext } from "context/sockets";
+import React, { useContext, useEffect } from "react";
 import QRCode from "react-qr-code";
+import { useDispatch, useSelector } from "react-redux";
 
 import "../sass/Playlist.scss";
 
 export default (props) => {
   const { playlistId } = props.match.params;
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const playlistUsers = useSelector((state) => state.playlist.users);
+  const sPromise = useContext(SocketContext);
+  const dispatch = useDispatch();
+  dispatch({ type: PLAYLIST_SET, payload: playlistId });
+  useEffect(() => {
+    if (currentUser) {
+      (async () => {
+        const socket = await sPromise;
+        socket.on("clientConnect", (data) => {
+          console.log(data);
+          dispatch({
+            type: PLAYLIST_USER_CONNECT,
+            payload: { playlistId: data.playlistId, userId: data.userId },
+          });
+        });
+      })();
+    }
+  }, [currentUser]);
+
+  const users = () => {
+    const userList = playlistUsers.map((userId) => (
+      <div>
+        <h2>{userId}</h2>
+      </div>
+    ));
+
+    return (
+      <div>
+        <h1>{playlistUsers.length} current users</h1>
+        {userList}
+      </div>
+    );
+  };
 
   return (
     <div className="container-fluid">
@@ -29,9 +65,7 @@ export default (props) => {
           />
         </div>
         <div className="col-sm-4 middle-playlist-sec" align="center">
-          <h1>?? current users</h1>
-          <h2>1. Hiroshi</h2>
-          <h2>2. Sam</h2>
+          {users()}
         </div>
       </div>
 

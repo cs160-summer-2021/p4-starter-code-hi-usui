@@ -2,8 +2,9 @@
 import { combineReducers } from "redux";
 
 import playlistsReducer from "./playlists";
+import usersReducer from "./users";
 
 export default combineReducers({
-  // errors: errorsReducer,
   playlist: playlistsReducer,
+  user: usersReducer,
 });

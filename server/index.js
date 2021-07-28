@@ -1,6 +1,5 @@
 import express from "express";
 import { createServer } from "http";
-import _ from "lodash";
 import { Server } from "socket.io";
 
 import { playlists, users } from "#src/routes/_index";
