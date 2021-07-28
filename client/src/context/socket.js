@@ -1,3 +1,4 @@
+import { USERS_SET_CURRENT } from "actions/types";
 import { userLogin } from "actions/users";
 import jwt from "jwt-decode";
 import { createContext } from "react";
@@ -14,7 +15,7 @@ if (localStorage.jwt) {
       jwt: localStorage.jwt,
     });
     console.log(user);
-    // store.dispatch();
+    store.dispatch({ type: USERS_SET_CURRENT, payload: user });
   } catch (e) {
     delete localStorage.jwt;
   }

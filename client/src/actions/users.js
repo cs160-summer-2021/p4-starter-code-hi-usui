@@ -4,7 +4,7 @@ import setAuthToken from "helpers/setAuthToken";
 
 export const userLogin = async () => {
   const res = await axios.get("/api/users/new");
-  console.log(res);
+
   const playlistId = res.data._id;
   return playlistId;
   // history.push(`/playlists/${playlistId}/display`);

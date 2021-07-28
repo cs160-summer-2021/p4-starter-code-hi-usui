@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prestart": "cp /Users/husui/materials/p4-starter-code-hi-usui/usuih-tls.key /Users/husui/materials/p4-starter-code-hi-usui/client/node_modules/webpack-dev-server/ssl",
     "start": "PORT=8000 react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scrips build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -37,6 +38,7 @@
     "react-bootstrap": "^2.0.0-beta.4",
     "react-dom": "^16.14.0",
     "react-qr-code": "^2.0.0",
+    "react-qr-scanner": "^1.0.0-alpha.7",
     "react-redux": "^7.2.2",
     "react-redux-actions-hook": "^1.1.16",
     "react-router-dom": "^5.2.0",

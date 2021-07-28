@@ -6,7 +6,7 @@ import "../sass/Playlist.scss";
 
 export default (props) => {
   const { playlistId } = props.match.params;
-  console.log(playlistId)
+  console.log(playlistId);
   return (
     <div className="container-fluid">
       <div className="row playlist-name">

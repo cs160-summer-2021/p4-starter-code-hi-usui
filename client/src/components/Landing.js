@@ -21,10 +21,10 @@ export default () => {
   const history = useHistory();
   const query = useQuery();
   const { height, width } = useWindowDimensions();
+
   const { playlist } = useSelector((state) => ({
     playlist: state.playlist,
   }));
-
   useEffect(() => {
     (async () => {
       const res = await axios.get("/api/playlists/new");
@@ -40,19 +40,8 @@ export default () => {
     });
   }, []);
 
-  const users = () => {
-    if (
-      playlist.playlistId &&
-      playlist.users.length &&
-      playlist.users.some((u) => u.device == "phone")
-    ) {
-    }
-  };
-
   const qr = () => {
     const size = query.get("size");
-    console.log(size);
-
     if (playlist.playlistId) {
       if (
         playlist.users.length &&
@@ -86,6 +75,32 @@ export default () => {
     }
   };
 
+  const phone = () => {
+    return (
+      <div>
+        Please visit the website on your main display or use your phone to scan
+        a QR code
+      </div>
+    );
+  };
+
+  const displayContent = () => {
+    let content;
+    if (height > 900 || width > 900) {
+      content = qr();
+    } else {
+      content = phone();
+    }
+
+    return (
+      <div className="row qr">
+        <div className="col-sm-12" align="center">
+          {content}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="container-fluid">
       <div className="row init-landing">
@@ -93,12 +108,7 @@ export default () => {
           <h1>RoastnToast</h1>
         </div>
       </div>
-      <div className="row qr">
-        <div className="col-sm-12" align="center">
-          {qr()}
-        </div>
-        <div className="col-sm-6">{users()}</div>
-      </div>
+      {displayContent()}
       <div className="row height-width">
         <div className="col-sm-12">
           <h1>
