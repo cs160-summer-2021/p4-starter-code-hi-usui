@@ -1,12 +1,10 @@
 import { USERS_SET_CURRENT } from "actions/types";
 import axios from "axios";
-import setAuthToken from "helpers/setAuthToken";
+import { setAuthToken } from "helpers/_index";
 
 export const userLogin = async () => {
   const res = await axios.get("/api/users/new");
-
-  const playlistId = res.data._id;
-  return playlistId;
+  return res.data;
   // history.push(`/playlists/${playlistId}/display`);
 };
 

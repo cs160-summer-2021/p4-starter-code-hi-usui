@@ -10,3 +10,4 @@ data
 dump.rdb
 logs
 node_modules
+*.key

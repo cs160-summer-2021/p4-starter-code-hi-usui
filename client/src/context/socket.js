@@ -1,5 +1,5 @@
-import { USERS_SET_CURRENT } from "actions/types";
-import { userLogin } from "actions/users";
+import { userLogin, USERS_SET_CURRENT } from "actions/_index";
+import { setAuthToken } from "helpers/_index";
 import jwt from "jwt-decode";
 import { createContext } from "react";
 import { io } from "socket.io-client";
@@ -7,18 +7,19 @@ import store from "store";
 
 const { clientHeight, clientWidth } = document.documentElement;
 
-if (localStorage.jwt) {
-  setAuthToken(localStorage.jwt);
-  try {
-    const user = userLogin({
-      user: jwt(localStorage.jwt),
-      jwt: localStorage.jwt,
-    });
-    console.log(user);
-    store.dispatch({ type: USERS_SET_CURRENT, payload: user });
-  } catch (e) {
-    delete localStorage.jwt;
+try {
+  const initUser = async () => {
+    const user = await userLogin();
+    localStorage.jwt = user.jwt;
+  };
+  if (localStorage.jwt) {
+    setAuthToken(localStorage.jwt);
+  } else {
+    initUser();
   }
+  // store.dispatch({ type: USERS_SET_CURRENT, payload: user });
+} catch (e) {
+  console.error(`Error with user information due to error '${e}'`);
 }
 
 export const socket = io(
