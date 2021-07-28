@@ -1,11 +1,12 @@
 import Spinner from "components/common/Spinner";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
 import "../sass/Playlist.scss";
 
 export default (props) => {
   const { playlistId } = props.match.params;
+  console.log(playlistId)
   return (
     <div className="container-fluid">
       <div className="row playlist-name">

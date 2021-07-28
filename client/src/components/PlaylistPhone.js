@@ -15,7 +15,7 @@ export default (props) => {
     return songs.map((song, index) => (
       <div key={index}>
         <h1>
-          - {index + 1}. {song.title}
+          {index + 1}. {song.title}
         </h1>
       </div>
     ));
@@ -33,40 +33,43 @@ export default (props) => {
   return (
     <div className="playlist-phone">
       <div className="roastntoast">
-        <h1>RoastnToast</h1>
-      </div>
-
-      <div className="top">
-        <div className="playlist-name">
-          <h1>Playlist Name</h1>
-        </div>
-        <div className="user-name">
-          <h1>User</h1>
-        </div>
-      </div>
-
-      <div className="content" align="center">
-        <div className="songs">{renderSongs()}</div>
-      </div>
-
-      <div className="footer">
-        <div className="add-song">
-          <form onSubmit={onSubmit}>
-            <TextField
-              name="songTitle"
-              onChange={onAddSongChange}
-              placeholder="Song title"
-              type="text"
-              value={addSong}
-            />
-            <input className="" type="submit" value="+ Add a song" />
-          </form>
+        <div className="app-name">
+          <h1>RoastnToast</h1>
         </div>
         <div className="qr">
           <QRCode
             value={`${new URL("/", window.location.href)}users/new`}
             size={70}
           />
+        </div>
+      </div>
+
+      <div className="top">
+        <div className="playlist-name">
+          <h1>"Playlist Name"</h1>
+        </div>
+        <div className="user-name">
+          <h1>"User"</h1>
+        </div>
+      </div>
+
+      <div className="content">
+        <p>Song Queue:</p>
+        <div className="songs">{renderSongs()}</div>
+      </div>
+
+      <div className="footer" align="center">
+        <div className="add-song" align="center">
+          <form onSubmit={onSubmit}>
+            <TextField
+              name="Enter Song"
+              onChange={onAddSongChange}
+              placeholder="Song title"
+              type="text"
+              value={addSong}
+            />
+            <input className="submit" type="submit" value="Add Song" />
+          </form>
         </div>
       </div>
     </div>
