@@ -51,7 +51,10 @@ export default (props) => {
         </div>
         <div className="qr">
           <QRCode
-            value={`${new URL("/", window.location.href)}users/new`}
+            value={`${new URL(
+              "/",
+              window.location.href
+            )}playlists/${playlistId}/phone`}
             size={70}
           />
         </div>
@@ -62,7 +65,7 @@ export default (props) => {
           <h1>"Playlist Name"</h1>
         </div>
         <div className="user-name">
-          <h1>"User"</h1>
+          <h1>"User" {currentUser ? currentUser.substring(0, 5) : null}</h1>
         </div>
       </div>
 

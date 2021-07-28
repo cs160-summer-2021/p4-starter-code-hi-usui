@@ -18,7 +18,6 @@ export default (props) => {
       (async () => {
         const socket = await sPromise;
         socket.on("clientConnect", (data) => {
-          console.log(data);
           dispatch({
             type: PLAYLIST_USER_CONNECT,
             payload: { playlistId: data.playlistId, userId: data.userId },
@@ -60,7 +59,10 @@ export default (props) => {
         </div>
         <div className="col-sm-4 middle-playlist-sec" align="center">
           <QRCode
-            value={`${new URL("/", window.location.href)}users/new`}
+            value={`${new URL(
+              "/",
+              window.location.href
+            )}playlists/${playlistId}/phone`}
             size={200}
           />
         </div>

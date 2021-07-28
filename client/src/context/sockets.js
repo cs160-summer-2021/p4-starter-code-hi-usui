@@ -16,7 +16,8 @@ export const socket = (async () => {
       const userInfo = await userLogin();
       setAuthToken(userInfo.jwt);
       localStorage.jwt = userInfo.jwt;
-      userId = userInfo.jwt;
+      const { id } = jwt_decode(localStorage.jwt);
+      userId = id;
     }
     store.dispatch({ type: USERS_SET_CURRENT, payload: userId });
     return io(new URL("/", window.location.href).href.replace("http", "ws"), {

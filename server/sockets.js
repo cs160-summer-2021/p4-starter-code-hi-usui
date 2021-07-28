@@ -29,8 +29,9 @@ const randomColorHex = () => {
 export const initSocketServer = (io) => {
   io.on("connection", (socket) => {
     const { device, jwt } = socket.handshake.query;
-    const payload = jwt_decode(jwt);
-    const userId = payload.id;
+    console.log(jwt);
+    // const payload = jwt_decode(jwt);
+    // const userId = payload.id;
     const socketId = socket.id;
     console.log(
       `Client {socketId '${socketId}', device: '${device}'} connected!`

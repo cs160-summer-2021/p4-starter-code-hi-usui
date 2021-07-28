@@ -32,7 +32,7 @@ export default () => {
         const providedPlaylistId = query.get("playlist");
         let playlistId;
         if (!providedPlaylistId) {
-          playlistId = (await axios.get("/api/playlists/new")).data.id;
+          playlistId = (await axios.get("/api/playlists/new")).data._id;
         } else {
           playlistId = providedPlaylistId;
         }

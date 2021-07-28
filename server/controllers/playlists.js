@@ -4,6 +4,7 @@ export const socketsPlaylist = (socket) => {
   const userAdd = async (payload) => {
     const { playlistId, userId } = payload;
     const playlist = await Playlist.findById(playlistId);
+    console.log(userId);
     playlist.users.push(userId);
     await playlist.save();
     socket.broadcast.emit("clientConnect", {
