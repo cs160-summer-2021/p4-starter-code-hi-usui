@@ -4,13 +4,15 @@ export const socketsPlaylist = (socket) => {
   const playlistSet = async (payload) => {
     const { playlistId, userId } = payload;
     const playlist = await Playlist.findById(playlistId);
-    const set = new Set(playlist.users);
-    set.add(userId);
+    const set = new Set(playlist.users.map((s) => s.toString()));
     playlist.users = Array.from(set);
     await playlist.save();
-    socket.broadcast.emit("client:add", {
+    socket.join(playlistId);
+    socket.to(playlistId).emit("user:add", {
       userId,
-      playlistId,
+    });
+    socket.on("disconnect", () => {
+      socket.to(playlistId).emit("user:remove", { userId });
     });
   };
 
@@ -25,14 +27,13 @@ export const socketsPlaylist = (socket) => {
     });
   };
 
-  const userAdd = async (payload) => {
-    const { playlistId, userId } = payload;
+  const songRemove = async (payload) => {
+    const { playlistId, title } = payload;
     const playlist = await Playlist.findById(playlistId);
-    playlist.users.push(userId);
+    playlist.songs = playlist.songs.filter((song) => song != title);
     await playlist.save();
-    socket.broadcast.emit("client:add", {
-      userId,
-      playlistId,
+    socket.to(playlistId).emit("song:remove", {
+      title,
     });
   };
 
@@ -46,7 +47,7 @@ export const socketsPlaylist = (socket) => {
 
   socket.on("playlist:set", playlistSet);
   socket.on("song:add", songAdd);
-  socket.on("user:add", userAdd);
+  socket.on("song:remove", songRemove);
   socket.on("user:remove", userRemove);
 };
 
@@ -55,5 +56,11 @@ export const Playlists = new (class Controller {
     const newPlaylist = new Playlist({ owner: req.user.id });
     const savedPlaylist = await newPlaylist.save();
     res.json(savedPlaylist);
+  };
+
+  get = async (req, res) => {
+    const { playlistId } = req.params;
+    const playlist = await Playlist.findById(playlistId);
+    res.json(playlist);
   };
 })();

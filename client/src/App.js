@@ -1,7 +1,6 @@
 import Landing from "components/Landing";
 import PlaylistDisplay from "components/PlaylistDisplay";
 import PlaylistPhone from "components/PlaylistPhone";
-import Index from "components/index";
 import { SocketContext, socket } from "context/sockets";
 import React, { Component } from "react";
 import { Provider } from "react-redux";
@@ -18,7 +17,6 @@ class App extends Component {
             <div className="App">
               <Switch>
                 <Route exact path="/" component={Landing} />
-                <Route exact path="/draw" component={Index} />
                 <Route
                   path="/playlists/:playlistId/display"
                   component={PlaylistDisplay}

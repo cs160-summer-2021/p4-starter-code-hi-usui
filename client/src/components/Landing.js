@@ -1,6 +1,6 @@
 // https://dev.to/bravemaster619/how-to-use-socket-io-client-correctly-in-react-app-o65
 //  How to use socket.io-client correctly in React app
-import { PLAYLIST_SET, PLAYLIST_USER_CONNECT } from "actions/types";
+import { PLAYLIST_SET, PLAYLIST_USER_ADD } from "actions/types";
 import axios from "axios";
 import Spinner from "components/common/Spinner";
 import { SocketContext } from "context/sockets";
@@ -39,9 +39,9 @@ export default () => {
         const socket = await sPromise;
         // socket.emit("playlist:set", { playlistId, userId });
         dispatch({ type: PLAYLIST_SET, payload: playlistId });
-        socket.on("client:add", (data) => {
+        socket.on("user:add", (data) => {
           dispatch({
-            type: PLAYLIST_USER_CONNECT,
+            type: PLAYLIST_USER_ADD,
             payload: { playlistId: data.playlistId, userId: data.userId },
           });
         });

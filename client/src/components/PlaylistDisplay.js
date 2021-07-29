@@ -1,49 +1,62 @@
 import {
-  PLAYLIST_SET,
   PLAYLIST_SONG_ADD,
-  PLAYLIST_USER_CONNECT,
+  PLAYLIST_SONG_REMOVE,
+  PLAYLIST_USER_ADD,
+  PLAYLIST_USER_REMOVE,
 } from "actions/types";
+import axios from "axios";
+import Spinner from "components/common/Spinner";
 import { SocketContext } from "context/sockets";
-import { data } from "jquery";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useDispatch, useSelector } from "react-redux";
 import "sass/Playlist.scss";
 
 export default (props) => {
   const { playlistId } = props.match.params;
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const userId = useSelector((state) => state.user.currentUser);
   const playlistUsers = useSelector((state) => state.playlist.users);
   const playlistSongs = useSelector((state) => state.playlist.songs);
   const sPromise = useContext(SocketContext);
   const dispatch = useDispatch();
-  dispatch({ type: PLAYLIST_SET, payload: playlistId });
+  const [playlist, setPlaylist] = useState(null);
+
   useEffect(() => {
-    if (currentUser) {
+    if (userId) {
       (async () => {
         const socket = await sPromise;
-        // socket.emit("playlist:set", { playlistId, userId });
-        socket.on("client:add", (data) => {
+        setPlaylist((await axios.get(`/api/playlists/${playlistId}/get`)).data);
+
+        socket.emit("playlist:set", { playlistId, userId });
+        socket.on("user:add", (data) => {
           dispatch({
-            type: PLAYLIST_USER_CONNECT,
-            payload: { playlistId: data.playlistId, userId: data.userId },
+            type: PLAYLIST_USER_ADD,
+            payload: { userId: data.userId },
+          });
+        });
+        socket.on("user:remove", (data) => {
+          console.log(`Client '${data.userId}' left the playlist!`);
+          dispatch({
+            type: PLAYLIST_USER_REMOVE,
+            payload: { userId: data.userId },
           });
         });
         socket.on("song:add", (data) => {
           dispatch({
             type: PLAYLIST_SONG_ADD,
-            payload: { playlistId: data.playlistId, title: data.title },
+            payload: { title: data.title },
           });
         });
         socket.on("song:remove", (data) => {
+          console.log("a");
           dispatch({
             type: PLAYLIST_SONG_REMOVE,
-            payload: { playlistId: data.playlistId, title: data.title },
+            payload: { title: data.title },
           });
         });
       })();
     }
-  }, [currentUser]);
+  }, [userId]);
 
   const users = () => {
     const userList = playlistUsers.map((userId) => (
@@ -61,6 +74,9 @@ export default (props) => {
   };
 
   const songs = () => {
+    if (!playlist) {
+      return <Spinner />;
+    }
     const songList = playlistSongs.map((song, index) => (
       <div>
         <h2>

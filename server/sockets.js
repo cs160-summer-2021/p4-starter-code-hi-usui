@@ -29,14 +29,12 @@ const randomColorHex = () => {
 export const initSocketServer = (io) => {
   io.on("connection", (socket) => {
     const { device, jwt } = socket.handshake.query;
-    console.log(jwt);
-    // const payload = jwt_decode(jwt);
-    // const userId = payload.id;
+    const payload = jwt_decode(jwt);
+    const userId = payload.id;
     const socketId = socket.id;
     console.log(
-      `Client {socketId '${socketId}', device: '${device}'} connected!`
+      `Client {userId '${userId}', socketId '${socketId}', device: '${device}'} connected!`
     );
-    User.findById(socketId);
 
     connections[socketId] = {
       socketId,
@@ -47,62 +45,6 @@ export const initSocketServer = (io) => {
       },
     };
 
-    // for (let anyId in connections) {
-    //   if (anyId != socketId) {
-    //     connections[anyId].socket.emit("client:add", {
-    //       socketId,
-    //       payload: connections[socketId].payload,
-    //     });
-    //   }
-    // }
-
     socketsPlaylist(socket);
-
-    socket.on("disconnect", () => {
-      console.log(`Client '${socketId}' disconnected!`);
-      delete connections[socketId];
-      Playlist.find({});
-      Playlist.update(
-        {},
-        {
-          $pull: {
-            users: { _id: socketId }, // ! FIXME: USE userId instead of socketId
-          },
-        },
-        function removeConnectionsCB(err, obj) {
-          console.log(`Removed connection '${socket.id}' from all playlists!`);
-        }
-      );
-
-      for (let anyId in connections) {
-        connections[anyId].socket.emit("clientDisconnect", socketId);
-      }
-    });
   });
-
-  // io.on("connection", async (socket) => {
-  // for (let anyId in connections) {
-  //   for (let point of connections[anyId].payload.points) {
-  //     connections[socketId].socket.emit("addPoint", { socketId: anyId, payload: point })
-  //   }
-  // }
-  // socket.on("onMouseMove", async (data) => {
-  //   if (connections[data.socketId]) {
-  //     connections[data.socketId].payload.points.push(data.payload)
-  //     for (let anyId in activeConnections(connections)) {
-  //       connections[anyId].socket.emit("addPoint", {
-  //         socketId,
-  //         payload: data.payload,
-  //       })
-  //     }
-  //   }
-  // })
-  // socket.on("disconnect", () => {
-  //   console.log(`Client '${socketId}' disconnected!`)
-  //   connections[socketId].active = false
-  //   for (let anyId in activeConnections(connections)) {
-  //     connections[anyId].socket.emit("clientDisconnect", socketId)
-  //   }
-  // })
-  // });
 };

@@ -7,5 +7,6 @@ const router = express.Router();
 const authenticate = passport.authenticate("jwt", { session: false });
 
 router.get("/new", authenticate, Playlists.new);
+router.get("/:playlistId/get", Playlists.get);
 
 export const playlists = router;

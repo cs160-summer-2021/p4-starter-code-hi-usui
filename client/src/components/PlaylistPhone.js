@@ -1,34 +1,52 @@
+import { PLAYLIST_SONG_ADD, PLAYLIST_SONG_REMOVE } from "actions/_index";
 import TextField from "components/common/TextField";
 import { SocketContext } from "context/sockets";
 import React, { useContext, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "sass/PlaylistPhone.scss";
 
 export default (props) => {
   const sPromise = useContext(SocketContext);
   const { playlistId } = props.match.params;
-  const [songs, setSongs] = useState([]);
+  const playlistSongs = useSelector((state) => state.playlist.songs);
   const [addSong, setAddSong] = useState([]);
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
+  const userId = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     (async () => {
       const socket = await sPromise;
-      if (currentUser) {
-        socket.emit("user:add", { playlistId, userId: currentUser });
-        socket.on("disconnect", (socket) => {
-          console.log(`Client '${socket.id}' disconnected from server!`);
+      if (userId) {
+        socket.emit("playlist:set", { playlistId, userId });
+        socket.emit("user:add", { playlistId, userId });
+        socket.on("user:remove", (userId) => {
+          console.log(`Client '${userId}' left the playlist!`);
         });
       }
     })();
-  }, [currentUser]);
+  }, [userId]);
 
   const renderSongs = () => {
-    return songs.map((song, index) => (
+    return playlistSongs.map((song, index) => (
       <div key={index}>
         <h1>
-          {index + 1}. {song.title}
+          {index + 1}. {song.title}{" "}
+          <button
+            onClick={async () => {
+              dispatch({
+                type: PLAYLIST_SONG_REMOVE,
+                payload: { title: song.title },
+              });
+              const socket = await sPromise;
+              socket.emit("song:remove", {
+                playlistId,
+                title: song.title,
+              });
+            }}
+          >
+            -
+          </button>
         </h1>
       </div>
     ));
@@ -45,7 +63,10 @@ export default (props) => {
       playlistId,
       title: addSong,
     });
-    setSongs([...songs, { title: addSong }]);
+    dispatch({
+      type: PLAYLIST_SONG_ADD,
+      payload: { title: addSong },
+    });
   };
 
   return (
@@ -70,7 +91,7 @@ export default (props) => {
           <h1>"Playlist Name"</h1>
         </div>
         <div className="user-name">
-          <h1>"User" {currentUser ? currentUser.substring(0, 5) : null}</h1>
+          <h1>"User" {userId ? userId.substring(0, 5) : null}</h1>
         </div>
       </div>
 
