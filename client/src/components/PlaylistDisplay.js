@@ -123,7 +123,9 @@ export default (props) => {
 
       <div className="row curr-song">
         <div className="col-sm-12 curr-song">
-          <h1>Current Song: ??</h1>
+          <h1>
+            Current Song: {playlist.songs.length ? playlist[0].title : None}
+          </h1>
         </div>
       </div>
     </div>
