@@ -1,15 +1,20 @@
-import { PLAYLIST_SET, PLAYLIST_USER_CONNECT } from "actions/types";
+import {
+  PLAYLIST_SET,
+  PLAYLIST_SONG_ADD,
+  PLAYLIST_USER_CONNECT,
+} from "actions/types";
 import { SocketContext } from "context/sockets";
+import { data } from "jquery";
 import React, { useContext, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { useDispatch, useSelector } from "react-redux";
-
-import "../sass/Playlist.scss";
+import "sass/Playlist.scss";
 
 export default (props) => {
   const { playlistId } = props.match.params;
   const currentUser = useSelector((state) => state.user.currentUser);
   const playlistUsers = useSelector((state) => state.playlist.users);
+  const playlistSongs = useSelector((state) => state.playlist.songs);
   const sPromise = useContext(SocketContext);
   const dispatch = useDispatch();
   dispatch({ type: PLAYLIST_SET, payload: playlistId });
@@ -17,10 +22,23 @@ export default (props) => {
     if (currentUser) {
       (async () => {
         const socket = await sPromise;
-        socket.on("clientConnect", (data) => {
+        // socket.emit("playlist:set", { playlistId, userId });
+        socket.on("client:add", (data) => {
           dispatch({
             type: PLAYLIST_USER_CONNECT,
             payload: { playlistId: data.playlistId, userId: data.userId },
+          });
+        });
+        socket.on("song:add", (data) => {
+          dispatch({
+            type: PLAYLIST_SONG_ADD,
+            payload: { playlistId: data.playlistId, title: data.title },
+          });
+        });
+        socket.on("song:remove", (data) => {
+          dispatch({
+            type: PLAYLIST_SONG_REMOVE,
+            payload: { playlistId: data.playlistId, title: data.title },
           });
         });
       })();
@@ -42,6 +60,23 @@ export default (props) => {
     );
   };
 
+  const songs = () => {
+    const songList = playlistSongs.map((song, index) => (
+      <div>
+        <h2>
+          {index + 1}. {song.title}
+        </h2>
+      </div>
+    ));
+
+    return (
+      <div>
+        <h1>Current Queue: {playlistSongs.length}</h1>
+        {songList}
+      </div>
+    );
+  };
+
   return (
     <div className="container-fluid">
       <div className="row playlist-name">
@@ -52,10 +87,7 @@ export default (props) => {
 
       <div className="row middle-playlist">
         <div className="col-sm-4 middle-playlist-sec" align="center">
-          <h1>Current Queue:</h1>
-          <h2>1. Song 1</h2>
-          <h2>2. Song 2</h2>
-          <h2>3. Song 3</h2>
+          {songs()}
         </div>
         <div className="col-sm-4 middle-playlist-sec" align="center">
           <QRCode

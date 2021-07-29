@@ -40,6 +40,11 @@ export default (props) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    const socket = await sPromise;
+    socket.emit("song:add", {
+      playlistId,
+      title: addSong,
+    });
     setSongs([...songs, { title: addSong }]);
   };
 

@@ -2,6 +2,7 @@ export const ERRORS_CLEAR = "ERRORS_CLEAR";
 export const ERRORS_GET = "ERRORS_GET";
 export const PLAYLIST_LOADING = "PLAYLIST_LOADING";
 export const PLAYLIST_SET = "PLAYLIST_SET";
+export const PLAYLIST_SONG_ADD = "PLAYLIST_SONG_ADD";
 export const PLAYLIST_USER_CONNECT = "PLAYLIST_USER_CONNECT";
 export const SCAN_END = "SCAN_END";
 export const SCAN_START = "SCAN_START";

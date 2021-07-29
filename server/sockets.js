@@ -49,7 +49,7 @@ export const initSocketServer = (io) => {
 
     // for (let anyId in connections) {
     //   if (anyId != socketId) {
-    //     connections[anyId].socket.emit("clientConnect", {
+    //     connections[anyId].socket.emit("client:add", {
     //       socketId,
     //       payload: connections[socketId].payload,
     //     });

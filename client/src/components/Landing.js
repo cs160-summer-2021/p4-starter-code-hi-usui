@@ -37,8 +37,9 @@ export default () => {
           playlistId = providedPlaylistId;
         }
         const socket = await sPromise;
+        // socket.emit("playlist:set", { playlistId, userId });
         dispatch({ type: PLAYLIST_SET, payload: playlistId });
-        socket.on("clientConnect", (data) => {
+        socket.on("client:add", (data) => {
           dispatch({
             type: PLAYLIST_USER_CONNECT,
             payload: { playlistId: data.playlistId, userId: data.userId },

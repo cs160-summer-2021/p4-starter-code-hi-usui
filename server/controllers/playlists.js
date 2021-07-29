@@ -1,13 +1,36 @@
 import { Playlist, User } from "#src/models/_index";
 
 export const socketsPlaylist = (socket) => {
+  const playlistSet = async (payload) => {
+    const { playlistId, userId } = payload;
+    const playlist = await Playlist.findById(playlistId);
+    const set = new Set(playlist.users);
+    set.add(userId);
+    playlist.users = Array.from(set);
+    await playlist.save();
+    socket.broadcast.emit("client:add", {
+      userId,
+      playlistId,
+    });
+  };
+
+  const songAdd = async (payload) => {
+    const { playlistId, title } = payload;
+    const playlist = await Playlist.findById(playlistId);
+    playlist.songs.push(title);
+    await playlist.save();
+    socket.broadcast.emit("song:add", {
+      playlistId,
+      title,
+    });
+  };
+
   const userAdd = async (payload) => {
     const { playlistId, userId } = payload;
     const playlist = await Playlist.findById(playlistId);
-    console.log(userId);
     playlist.users.push(userId);
     await playlist.save();
-    socket.broadcast.emit("clientConnect", {
+    socket.broadcast.emit("client:add", {
       userId,
       playlistId,
     });
@@ -21,6 +44,8 @@ export const socketsPlaylist = (socket) => {
     console.log(`Removed user '${userId}' from playlist '${playlistId}'`);
   };
 
+  socket.on("playlist:set", playlistSet);
+  socket.on("song:add", songAdd);
   socket.on("user:add", userAdd);
   socket.on("user:remove", userRemove);
 };

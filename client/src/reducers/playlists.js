@@ -1,6 +1,10 @@
-import { PLAYLIST_SET, PLAYLIST_USER_CONNECT } from "actions/types";
+import {
+  PLAYLIST_SET,
+  PLAYLIST_SONG_ADD,
+  PLAYLIST_USER_CONNECT,
+} from "actions/types";
 
-const initialState = { playlistId: null, users: [] };
+const initialState = { playlistId: null, songs: [], users: [] };
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -9,6 +13,15 @@ export default function (state = initialState, action) {
         ...state,
         playlistId: action.payload,
       };
+    case PLAYLIST_SONG_ADD:
+      if (action.payload.playlistId == state.playlistId) {
+        return {
+          ...state,
+          songs: [...state.songs, action.payload],
+        };
+      } else {
+        return state;
+      }
     case PLAYLIST_USER_CONNECT:
       if (action.payload.playlistId == state.playlistId) {
         return {
