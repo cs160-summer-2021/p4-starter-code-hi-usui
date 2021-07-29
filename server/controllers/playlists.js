@@ -8,6 +8,7 @@ export const socketsPlaylist = (socket) => {
     playlist.users = Array.from(set);
     await playlist.save();
     socket.join(playlistId);
+    console.log("AKSHDKJASHD");
     socket.to(playlistId).emit("user:add", {
       userId,
     });
@@ -21,7 +22,7 @@ export const socketsPlaylist = (socket) => {
     const playlist = await Playlist.findById(playlistId);
     playlist.songs.push(title);
     await playlist.save();
-    socket.broadcast.emit("song:add", {
+    socket.to(playlistId).emit("song:add", {
       playlistId,
       title,
     });

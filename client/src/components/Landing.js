@@ -37,7 +37,7 @@ export default () => {
           playlistId = providedPlaylistId;
         }
         const socket = await sPromise;
-        // socket.emit("playlist:set", { playlistId, userId });
+        socket.emit("playlist:set", { playlistId, userId: currentUser });
         dispatch({ type: PLAYLIST_SET, payload: playlistId });
         socket.on("user:add", (data) => {
           dispatch({

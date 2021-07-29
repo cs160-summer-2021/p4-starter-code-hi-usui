@@ -1,4 +1,5 @@
 import {
+  PLAYLIST_SET,
   PLAYLIST_SONG_ADD,
   PLAYLIST_SONG_REMOVE,
   PLAYLIST_USER_ADD,
@@ -23,6 +24,7 @@ export default (props) => {
 
   useEffect(() => {
     if (userId) {
+      dispatch({ type: PLAYLIST_SET, payload: playlistId });
       (async () => {
         const socket = await sPromise;
         setPlaylist((await axios.get(`/api/playlists/${playlistId}/get`)).data);
